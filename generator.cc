@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <iomanip>                      // std::setprecision
 
 #include "Network.h"
 
@@ -14,39 +15,42 @@ using namespace std;
 
 int main()
 {
-  Network* rede;
+  Network* network;
   ofstream f;
 
-  double redes[NODES][LINKS][RUNS];
+  double networks[NODES][LINKS][RUNS];
   int count[NODES][LINKS];
   int flag[NODES];
 
-  int n, m;
+  int n, m, seed;
   double area;
 
   for(int i = 0; i < NODES; i++)
   {
     area = AREA;
     n = int(pow(2, i + NODES));
-    cout << "Buscando redes para n=" << n << endl;
+    cout << "Finding networks for n=" << n << endl;
+    srand(n);
 
     do {
-      srand((int)100*area);
-      rede = new Network(n, area, TPOWER);
-      m = rede->get_links().size();
+      //seed = (int)(100*area);
+      //srand(seed);
+      network = new Network(n, area, TPOWER);
+      m = network->get_links().size();
 
       if((m > 3) && (m < 65))
       {
         if(count[i][m - 4] < RUNS)
         {
-          redes[i][m - 4][count[i][m - 4]] = area;
+          cout << "n=" << n << " m=" << m << " seed=" << seed << " area=" << area << endl;
+          networks[i][m - 4][count[i][m - 4]] = area;
           count[i][m - 4]++;
         }
 
-        if(count[i][m - 4] == RUNS - 1)
+        if(count[i][m - 4] == RUNS)
         {
           flag[i]++;
-          cout << "Todas as 100 redes com n=" << n << " e m=" << m << " já foram encontradas" << endl;
+          cout << "All 100 networks with n=" << n << " and m=" << m << " are already found." << endl;
         }
       }
       area = area - INCRMT;
@@ -61,7 +65,7 @@ int main()
     {
       for(int k = 0; k < RUNS; k++)
       {
-        f << redes[i][j][k] << "\t";
+        f << fixed << setprecision(6) << networks[i][j][k] << "\t";
       }
       f << endl;
     }
