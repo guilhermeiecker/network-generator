@@ -19,4 +19,7 @@ Node.o: Node.cc
 	$(CC) $(CFLAGS) -c Node.cc
 
 clean:
-	rm *.o generator network.txt
+	rm *.o generator
+
+clean-all:
+	rm *.o generator *.txt
