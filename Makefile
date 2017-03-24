@@ -1,25 +1,14 @@
 CC=g++
-CFLAGS=-Wall -std=c++11
+CFLAGS=-g -std=c++11 -Wextra -Wunused -Wall -mcmodel=large
+LFLAGS= -lm
 
-OBJ= generator.o Network.o Link.o Node.o
-
-generator: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o generator
-
-generator.o: generator.cc
-	$(CC) $(CFLAGS) -c generator.cc
-
-Network.o: Network.cc
-	$(CC) $(CFLAGS) -c Network.cc
-
-Link.o: Link.cc
-	$(CC) $(CFLAGS) -c Link.cc
-
-Node.o: Node.cc
-	$(CC) $(CFLAGS) -c Node.cc
+main: $(OBJ)
+	$(CC) $(CFLAGS) main.cpp -o main $(LFLAGS)
 
 clean:
-	rm *.o generator
+	rm main
 
 clean-all:
-	rm *.o generator *.txt
+	rm main
+	rm networks/*
+	rm results/* 
