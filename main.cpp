@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void print_network_json(Network*);
+void print_network_json(Network*, string);
 
 int main(int argc, char** argv)
 {
@@ -34,7 +34,7 @@ int main(int argc, char** argv)
         network = new Network(n, area, tpower);
 	
 	string name;
-        name = NETWORKS_PATH + to_string(n) + "-" + to_string((int)area) + "-" + to_string(run) + ".dat";
+        name = NETWORK_PATH + to_string(n) + "-" + to_string((int)area) + "-" + to_string(run) + ".json";
 
 	print_network_json(network, name);
 
@@ -43,18 +43,47 @@ int main(int argc, char** argv)
 
 void print_network_json(Network* r, string name)
 {
+	vector<Node> nodes = r->get_nodes();
+	vector<Link> links = r->get_links();
+
 	ofstream o;
 	o.open(name);
 
 	o << "{\n";
 	o << "\t\"nodes\": [\n";
 	
-	for (vector<Node>::iterator i = r->get_nodes().begin(); i != r->get_nodes().end(); ++i)
+	for (vector<Node>::iterator i = nodes.begin(); i != nodes.end(); ++i)
 	{
-		o << "\t{\n";
-		o << "\t\t\"id\":\"" << i->get_id() << "\",\n";
-		o << "\t\t\"x\" :\"" << i->get_x()  << "\",\n";
-		o << "\t\t\"y\" :\"" << i->get_y()  << "\"\n";
-		o << "\t},\n";
+		o << "\t\t{\n";
+		o << "\t\t\t\"id\": \"" << i->get_id() << "\",\n";
+                o << "\t\t\t\"label\": \"" << i->get_id() << "\",\n";
+		o << "\t\t\t\"x\" : \"" << i->get_x()  << "\",\n";
+		o << "\t\t\t\"y\" : \"" << i->get_y()  << "\",\n";
+                o << "\t\t\t\"size\": \"1\"\n";
+			
+
+                if((i != nodes.end()) && (next(i) == nodes.end()))	
+			o << "\t\t}\n";
+		else
+			o << "\t\t},\n";
 	}
+	
+	o << "\t],\n\t\"edges\": [\n";
+
+	for (vector<Link>::iterator i = links.begin(); i != links.end(); ++i)
+	{
+		o << "\t\t{\n";
+		o << "\t\t\t\"id\": \"" << i->get_id() << "\",\n";
+                o << "\t\t\t\"source\" : \"" << i->get_sender()->get_id()  << "\",\n";
+                o << "\t\t\t\"target\" : \"" << i->get_recver()->get_id()  << "\"\n";
+
+		if((i != links.end()) && (next(i) == links.end()))
+			o << "\t\t}\n";
+		else
+			o << "\t\t},\n";
+	}
+
+	o << "\t]\n}" << flush;
+
+	o.close();
 }

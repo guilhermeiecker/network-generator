@@ -10,5 +10,4 @@ clean:
 
 clean-all:
 	rm main
-	rm networks/*
-	rm results/* 
+	rm data/*
